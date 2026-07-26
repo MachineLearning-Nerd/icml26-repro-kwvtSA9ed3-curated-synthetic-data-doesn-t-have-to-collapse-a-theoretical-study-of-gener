@@ -34,11 +34,20 @@ def sha256(p: Path) -> str:
     return hashlib.sha256(p.read_bytes()).hexdigest()
 
 
+IGNORED_DIRS = {".git", ".cache", ".huggingface"}
+
+
 def file_set(root: Path) -> set[str]:
+    """Real Space content only.
+
+    A snapshot_download leaves .cache/huggingface/ metadata behind; counting it would
+    inflate the judged file count and, worse, copy download bookkeeping into the
+    candidate as if it were evidence.
+    """
     return {
         str(p.relative_to(root))
         for p in root.rglob("*")
-        if p.is_file() and ".git" not in p.parts
+        if p.is_file() and not IGNORED_DIRS & set(p.parts)
     }
 
 
