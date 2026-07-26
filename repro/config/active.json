@@ -1,5 +1,5 @@
 {
-  "node": "claim6/d5",
+  "node": "claim6/single-fixed",
   "stages": [
     "judged_reference",
     "symbolic_claim1",
@@ -14,7 +14,7 @@
   ],
   "estimated_cores": 8,
   "compute_target": "hf:cpu-upgrade",
-  "notes": "Claim 6 (E4) sibling d5. Inherits and reruns the full theory regression suite, then runs the text-domain retraining loop. T_B=15.",
+  "notes": "Claim 6 (E4) single-preference control on the padding-mask-fixed loss. T_B=None. Identical to the d5 fixed node in every other parameter, so the two form the pluralistic-vs-single comparison the claim sentence actually makes.",
   "params": {
     "judged_reference": {
       "eps": 0.1
@@ -35,7 +35,7 @@
     },
     "claim6_text_gpt2": {
       "T_A": 10,
-      "T_B": 15,
+      "T_B": null,
       "rounds": 20,
       "n_seed": 1000,
       "n_curated": 200,
