@@ -1,18 +1,18 @@
 {
-  "node": "route-a/symbolic-proof-certificates",
+  "node": "theory-consolidated/routes-A+B",
   "stages": [
     "judged_reference",
-    "symbolic_claim1",
-    "symbolic_claim2",
-    "symbolic_claim3",
-    "symbolic_claim4"
+    "symbolic_claim1", "symbolic_claim2", "symbolic_claim3", "symbolic_claim4",
+    "exact_claim1", "numeric_claim2", "numeric_claim3", "numeric_claim4"
   ],
   "estimated_cores": 1,
   "compute_target": "hf:cpu-upgrade",
-  "notes": "Route A. Runs the inherited baseline reference (cumulative regression) plus symbolic certificates.",
+  "notes": "Cumulative theory regression suite. Every claim carries two independent routes: symbolic certificates (A) and exact/continuous numerics (B). Later nodes inherit and rerun all of it.",
   "params": {
-    "judged_reference": {
-      "eps": 0.1
-    }
+    "judged_reference": { "eps": 0.1 },
+    "exact_claim1": { "steps": 60 },
+    "numeric_claim2": { "steps": 300, "n_random": 400 },
+    "numeric_claim3": { "n_random": 3000, "steps": 300 },
+    "numeric_claim4": { "steps": 400 }
   }
 }
