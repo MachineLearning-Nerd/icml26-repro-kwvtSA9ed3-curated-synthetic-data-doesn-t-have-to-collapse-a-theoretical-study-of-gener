@@ -20,25 +20,27 @@ from repro.lib.verdict import Verdict
 
 CONFIG_PATH = Path("repro/config/active.json")
 
-# stage name -> module implementing `run(cfg) -> Verdict | list[Verdict]`
-STAGES = {
-    "judged_reference": "repro.stages.judged_reference",
-    "claim1_outside_decay": "repro.stages.claim1_outside_decay",
-    "claim2_noncollapse": "repro.stages.claim2_noncollapse",
-    "claim3_variance": "repro.stages.claim3_variance",
-    "claim4_nash": "repro.stages.claim4_nash",
-    "claim5_cifar_flow": "repro.stages.claim5_cifar_flow",
-    "claim6_text_gpt2": "repro.stages.claim6_text_gpt2",
-}
+# A stage named "foo" is the module repro.stages.foo exposing
+# `run(params) -> Verdict | list[Verdict]`.  Resolution is by name so that
+# sibling branches can add their own stage modules without colliding.
+STAGE_PACKAGE = "repro.stages"
+
+
+def resolve_stage(name: str):
+    if not name.replace("_", "").isalnum():
+        raise SystemExit(f"illegal stage name {name!r}")
+    try:
+        return importlib.import_module(f"{STAGE_PACKAGE}.{name}")
+    except ModuleNotFoundError as exc:
+        raise SystemExit(f"stage {name!r} has no module {STAGE_PACKAGE}.{name}: {exc}")
 
 
 def load_config() -> dict:
     if not CONFIG_PATH.exists():
         raise SystemExit(f"missing {CONFIG_PATH} -- every node must commit its stage config")
     cfg = json.loads(CONFIG_PATH.read_text())
-    unknown = [s for s in cfg.get("stages", []) if s not in STAGES]
-    if unknown:
-        raise SystemExit(f"unknown stages in {CONFIG_PATH}: {unknown}")
+    if not cfg.get("stages"):
+        raise SystemExit(f"{CONFIG_PATH} lists no stages")
     return cfg
 
 
@@ -64,7 +66,7 @@ def main() -> int:
 
     verdicts: list[Verdict] = []
     for name in cfg.get("stages", []):
-        mod = importlib.import_module(STAGES[name])
+        mod = resolve_stage(name)
         with report.Section(f"stage: {name}") as sec:
             out = mod.run(cfg.get("params", {}).get(name, {}))
         got = out if isinstance(out, list) else [out]

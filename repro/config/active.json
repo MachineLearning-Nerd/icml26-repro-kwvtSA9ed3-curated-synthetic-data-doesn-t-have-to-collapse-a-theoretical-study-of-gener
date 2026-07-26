@@ -1,10 +1,32 @@
 {
-  "node": "baseline/framework-and-judged-reference",
-  "stages": ["judged_reference"],
+  "node": "route-b/exact-and-continuous",
+  "stages": [
+    "judged_reference",
+    "exact_claim1",
+    "numeric_claim2",
+    "numeric_claim3",
+    "numeric_claim4"
+  ],
   "estimated_cores": 1,
   "compute_target": "hf:cpu-upgrade",
-  "notes": "Baseline control. Reproduces the judged 3-state toy numbers as reference only; records BLOCKED.",
+  "notes": "Route B. Exact rational counterexamples + general continuous landscape dynamics.",
   "params": {
-    "judged_reference": { "eps": 0.1 }
+    "judged_reference": {
+      "eps": 0.1
+    },
+    "exact_claim1": {
+      "steps": 60
+    },
+    "numeric_claim2": {
+      "steps": 300,
+      "n_random": 120
+    },
+    "numeric_claim3": {
+      "n_random": 1200,
+      "steps": 300
+    },
+    "numeric_claim4": {
+      "steps": 400
+    }
   }
 }
