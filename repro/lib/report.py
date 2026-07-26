@@ -8,6 +8,7 @@ because in local orx mode the run log is the only evidence channel.
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 import os
 import platform
@@ -28,6 +29,7 @@ def artifact_dir(*parts: str) -> Path:
 def write_json(path: Path, obj: Any) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(obj, indent=2, sort_keys=True, default=_default) + "\n")
+    _emit(path)
     return path
 
 
@@ -41,7 +43,47 @@ def write_csv(path: Path, rows: Iterable[dict], fieldnames: list[str] | None = N
         w = csv.DictWriter(fh, fieldnames=fieldnames)
         w.writeheader()
         w.writerows(rows)
+    _emit(path)
     return path
+
+
+# --------------------------------------------------------------------------- #
+# Lossless artifact channel.
+#
+# In orx local mode `orx artifacts` does not exist: files written under
+# .openresearch/artifacts/ inside a compute job are unreachable once the job ends,
+# and the run log is the only wire out. So every artifact is also emitted to stdout
+# between framed markers carrying its exact byte count and SHA-256. A consumer can
+# reconstruct the file byte-for-byte and verify it, which means a truncated or
+# interleaved log fails the hash check loudly instead of yielding plausible-looking
+# wrong numbers.
+#
+# Emission is base64 of the raw bytes: artifacts contain newlines, and a payload that
+# cannot collide with the marker lines is what makes the frame unambiguous.
+
+EMIT_BEGIN = "<<<ORX-ARTIFACT"
+EMIT_END = ">>>ORX-ARTIFACT-END"
+EMIT_LIMIT = int(os.environ.get("ORX_ARTIFACT_EMIT_LIMIT", 4_000_000))
+
+
+def _emit(path: Path) -> None:
+    import base64
+
+    raw = path.read_bytes()
+    rel = path.as_posix()
+    digest = hashlib.sha256(raw).hexdigest()
+    if len(raw) > EMIT_LIMIT:
+        # Never truncate silently: say so, and say exactly how much was withheld.
+        print(f"{EMIT_BEGIN} path={rel} bytes={len(raw)} sha256={digest} "
+              f"encoding=none status=OMITTED-TOO-LARGE limit={EMIT_LIMIT}")
+        print(f"{EMIT_END} path={rel}")
+        return
+    payload = base64.b64encode(raw).decode("ascii")
+    print(f"{EMIT_BEGIN} path={rel} bytes={len(raw)} sha256={digest} "
+          f"encoding=base64 status=OK")
+    for i in range(0, len(payload), 76):
+        print(payload[i:i + 76])
+    print(f"{EMIT_END} path={rel}")
 
 
 def _default(o: Any) -> Any:
