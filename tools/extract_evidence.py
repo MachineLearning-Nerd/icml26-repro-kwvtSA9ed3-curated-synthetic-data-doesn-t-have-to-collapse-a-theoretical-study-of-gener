@@ -23,15 +23,18 @@ import subprocess
 import sys
 from pathlib import Path
 
+# Numbers may be negative ("H=-0.0000" for a fully collapsed round), so every
+# numeric group allows a leading minus -- without it those rows are silently dropped,
+# which loses exactly the collapsed rounds the comparison depends on.
 # "    round  7                                       H(L)=1.9312  mean_len= 18.4  distinct= 31  nearA=0.14  nearB=0.09  loss=3.201  74s"
 TEXT_ROUND = re.compile(
-    r"round\s+(\d+)\s+H\(L\)=([\d.]+)\s+mean_len=\s*([\d.]+)\s+distinct=\s*(\d+)\s+"
-    r"nearA=([\d.nan]+)\s+nearB=([\d.nan]+)\s+loss=([\d.]+)\s+(\d+)s"
+    r"round\s+(\d+)\s+H\(L\)=(-?[\d.]+)\s+mean_len=\s*(-?[\d.]+)\s+distinct=\s*(\d+)\s+"
+    r"nearA=(-?[\d.nan]+)\s+nearB=(-?[\d.nan]+)\s+loss=(-?[\d.]+)\s+(\d+)s"
 )
 # "    round  3                                       H=1.9312  KL=0.0821  featVar=0.412  intraVar=0.377  classes=10  91s"
 FLOW_ROUND = re.compile(
-    r"round\s+(\d+)\s+H=([\d.]+)\s+KL=([\d.-]+)\s+featVar=([\d.]+)\s+"
-    r"intraVar=([\d.]+)\s+classes=(\d+)\s+(\d+)s"
+    r"round\s+(\d+)\s+H=(-?[\d.]+)\s+KL=(-?[\d.]+)\s+featVar=(-?[\d.]+)\s+"
+    r"intraVar=(-?[\d.]+)\s+classes=(\d+)\s+(\d+)s"
 )
 KV = re.compile(r"^\s{4}(\S.*?)\s{2,}(.+?)\s*$")
 
