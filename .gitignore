@@ -3,4 +3,6 @@ __pycache__/
 *.pyc
 .openresearch/artifacts/*
 !.openresearch/artifacts/.gitkeep
-data/
+# Only the top-level dataset cache. A bare `data/` also matched repro/data/, which
+# silently kept committed evidence inputs out of the repo and made a run report BLOCKED.
+/data/

@@ -1,0 +1,61 @@
+{
+  "_what": "Measured summaries of every sibling arm of the two empirical experiments, carried here as committed data so the comparative claims can be decided in one place. Every number is exactly what the named run printed to its log; nothing is recomputed or adjusted.",
+  "_provenance": "orx local mode has no artifact store, so each figure was read from the terminal-state log of the run id given below. The full logs and the per-round CSVs recovered from them are published alongside this file.",
+  "_metrics": {
+    "entropy_tail_mean": "Claim 5: mean class entropy of generated CIFAR-10 samples over the final 5 of 25 rounds (natural log, max log 10 = 2.3026).",
+    "H_tail_mean": "Claim 6: mean length entropy H(L) of generated text over the final 5 of 20 rounds.",
+    "first": "The same metric at round 1, before recursive retraining has had an effect."
+  },
+  "configs": [
+    {
+      "claim": "claim5",
+      "label": "single-reward (M=1, target class 0)",
+      "M": 1,
+      "run_id": "3e518ee8-236a-46c0-8222-94ede16fd6bf",
+      "first": 1.7581,
+      "entropy_tail_mean": 0.0,
+      "n_classes_final": 1,
+      "classifier_accuracy": 0.8455
+    },
+    {
+      "claim": "claim5",
+      "label": "balanced pluralistic (M=2)",
+      "M": 2,
+      "run_id": "1b461517-66f6-4b9a-8b61-2557b2e46270",
+      "first": 1.7581,
+      "entropy_tail_mean": 0.0,
+      "n_classes_final": 1,
+      "classifier_accuracy": 0.8455
+    },
+    {
+      "claim": "claim5",
+      "label": "balanced pluralistic (M=5)",
+      "M": 5,
+      "run_id": "8abf3220-3efa-4a6a-a3e3-5150e4465e27",
+      "first": 1.7581,
+      "entropy_tail_mean": 1.1427,
+      "n_classes_final": 5,
+      "classifier_accuracy": 0.8455
+    },
+    {
+      "claim": "claim6",
+      "label": "single preference (T_A=10)",
+      "M": 1,
+      "run_id": "79d9795a-1f93-4544-9281-b5c0c4ba7403",
+      "first": 2.8944,
+      "H_tail_mean": 0.676,
+      "mean_len_final": 9.2,
+      "n_distinct_final": 4
+    },
+    {
+      "claim": "claim6",
+      "label": "two preferences (T_A=10, T_B=15, d=5)",
+      "M": 2,
+      "run_id": "19b9ba40-a215-4d32-a158-e0fefce956e6",
+      "first": 3.182,
+      "H_tail_mean": 3.1001,
+      "mean_len_final": 27.9,
+      "n_distinct_final": 58
+    }
+  ]
+}
