@@ -1,18 +1,62 @@
 {
-  "node": "theory-consolidated/routes-A+B",
+  "node": "claim5/m5",
   "stages": [
     "judged_reference",
-    "symbolic_claim1", "symbolic_claim2", "symbolic_claim3", "symbolic_claim4",
-    "exact_claim1", "numeric_claim2", "numeric_claim3", "numeric_claim4"
+    "symbolic_claim1",
+    "symbolic_claim2",
+    "symbolic_claim3",
+    "symbolic_claim4",
+    "exact_claim1",
+    "numeric_claim2",
+    "numeric_claim3",
+    "numeric_claim4",
+    "claim5_cifar_flow"
   ],
-  "estimated_cores": 1,
+  "estimated_cores": 8,
   "compute_target": "hf:cpu-upgrade",
-  "notes": "Cumulative theory regression suite. Every claim carries two independent routes: symbolic certificates (A) and exact/continuous numerics (B). Later nodes inherit and rerun all of it.",
+  "notes": "Claim 5 (E3) sibling m5: targets=[0, 1, 2, 3, 4]. Inherits and reruns the full theory regression suite, then runs the CIFAR-10 OT-CFM retraining loop.",
   "params": {
-    "judged_reference": { "eps": 0.1 },
-    "exact_claim1": { "steps": 60 },
-    "numeric_claim2": { "steps": 300, "n_random": 400 },
-    "numeric_claim3": { "n_random": 3000, "steps": 300 },
-    "numeric_claim4": { "steps": 400 }
+    "judged_reference": {
+      "eps": 0.1
+    },
+    "exact_claim1": {
+      "steps": 60
+    },
+    "numeric_claim2": {
+      "steps": 300,
+      "n_random": 400
+    },
+    "numeric_claim3": {
+      "n_random": 3000,
+      "steps": 300
+    },
+    "numeric_claim4": {
+      "steps": 400
+    },
+    "claim5_cifar_flow": {
+      "targets": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "rounds": 25,
+      "n_train": 50000,
+      "n_pool": 1500,
+      "keep_ratio": 0.05,
+      "K": 256,
+      "gamma": 10.0,
+      "ode_steps": 12,
+      "pretrain_steps": 2500,
+      "pretrain_batch": 64,
+      "finetune_steps": 120,
+      "finetune_batch": 32,
+      "clf_steps": 2500,
+      "gen_batch": 250,
+      "threads": 8,
+      "seed": 0,
+      "unet_ch": 48
+    }
   }
 }
