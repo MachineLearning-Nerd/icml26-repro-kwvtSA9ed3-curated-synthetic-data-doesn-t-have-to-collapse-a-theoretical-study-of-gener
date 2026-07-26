@@ -57,14 +57,27 @@ def load_wikitext(tokenizer, n_seed: int, seed: int):
     return seed_pool, pretrain
 
 
-def encode(tokenizer, texts: list[str], device) -> torch.Tensor:
+def encode(tokenizer, texts: list[str], device) -> tuple[torch.Tensor, torch.Tensor]:
+    """Return (input_ids, labels) with padding positions masked out of the loss.
+
+    Sequences are padded to MAX_LEN with EOS, and WikiText prose lines here are 5-60
+    words, so most positions in a padded row are padding. Training with labels equal to
+    the inputs therefore scores the model mostly on predicting padding, and the cheapest
+    way to win that game is to emit EOS immediately -- which is exactly what happened:
+    pretrain loss collapsed to ~0.3, far below anything plausible for prose, and
+    generations came out at ~0.0 words with a single distinct length from round one.
+    Masking padding with -100 makes the loss depend only on real tokens, so length stays
+    a property the model has to learn rather than a decoding artifact.
+    """
     eos = tokenizer.eos_token_id
-    out = torch.full((len(texts), MAX_LEN), eos, dtype=torch.long)
+    ids_out = torch.full((len(texts), MAX_LEN), eos, dtype=torch.long)
+    labels = torch.full((len(texts), MAX_LEN), -100, dtype=torch.long)
     for i, t in enumerate(texts):
-        ids = tokenizer(t, truncation=True, max_length=MAX_LEN - 1)["input_ids"]
-        ids = ids + [eos]
-        out[i, : len(ids)] = torch.tensor(ids, dtype=torch.long)
-    return out.to(device)
+        ids = tokenizer(t, truncation=True, max_length=MAX_LEN - 1)["input_ids"] + [eos]
+        row = torch.tensor(ids, dtype=torch.long)
+        ids_out[i, : len(ids)] = row
+        labels[i, : len(ids)] = row  # the terminating EOS IS supervised; the padding is not
+    return ids_out.to(device), labels.to(device)
 
 
 def word_count(text: str) -> int:
@@ -89,8 +102,8 @@ def train_steps(model, batches, lr: float, label: str, log_every: int = 200) -> 
     opt = torch.optim.AdamW(model.parameters(), lr=lr)
     model.train()
     losses = []
-    for i, x in enumerate(batches):
-        out = model(x, labels=x)
+    for i, (x, lab) in enumerate(batches):
+        out = model(x, labels=lab)
         out.loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
         opt.step()
@@ -224,6 +237,10 @@ def run(params: dict) -> Verdict:
             order = list(rng.permutation(len(pretrain_texts)))
         take, order = order[:pretrain_batch], order[pretrain_batch:]
         pre_batches.append(encode(tok, [pretrain_texts[j] for j in take], device))
+    # Make the padding mask auditable: if this fraction were 1.0 the loss would again be
+    # dominated by padding, which is the failure that produced the earlier empty samples.
+    supervised = float(np.mean([(lab != -100).float().mean().item() for _, lab in pre_batches]))
+    report.kv("supervised (non-padding) positions", f"{supervised:.1%} of {MAX_LEN} per sequence")
     pre_loss = train_steps(model, pre_batches, lr=3e-4, label="pretrain", log_every=200)
     report.kv("pretrain final loss / wall clock", f"{pre_loss:.4f} / {time.time() - t0:.0f}s")
 
