@@ -1,0 +1,10 @@
+{
+  "node": "baseline/framework-and-judged-reference",
+  "stages": ["judged_reference"],
+  "estimated_cores": 1,
+  "compute_target": "hf:cpu-upgrade",
+  "notes": "Baseline control. Reproduces the judged 3-state toy numbers as reference only; records BLOCKED.",
+  "params": {
+    "judged_reference": { "eps": 0.1 }
+  }
+}

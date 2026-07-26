@@ -1,0 +1,143 @@
+{
+  "paper": "arXiv:2605.07724v1",
+  "openreview": "kwvtSA9ed3",
+  "source_audit": "docs/source_audit.md",
+  "source_sha256": {
+    "ar5iv_html_main_plus_appendix": "13e7591d971a2ff88da73262a77c14b6de1b885403ab4ea850f57da02bec2af4",
+    "arxiv_html_v1_main_only": "ebd4297558bbe3cb784906588eb9b1b94cb69669abfb31ebda57a2d25cccfe7d",
+    "arxiv_abs": "2a3e87e54e3540c8669119714f532cd40ccce873f42624c383c4f87df58be93c"
+  },
+  "verdict_vocabulary": ["VERIFIED", "FALSIFIED", "BLOCKED"],
+  "claims": [
+    {
+      "id": "claim1",
+      "anchor": "Lemma 3.3 (Section 3.2); appendix Lemma B.4",
+      "judged_status": "TOY (1/2)",
+      "judged_criticism": "checked on a 3-macro-state reduction, not the general 2-basin landscape with continuous distributions",
+      "exact_statement": "Fix eps>0 and work in the large-K regime (Eq 5). Under Assumption 2.1 (i,iii), there exists a constant rho_eps in (0,1) such that m_{t+1} <= rho_eps * m_t for all t. Hence m_t <= rho_eps^t m_0 -> 0 and therefore a_t + b_t -> 1.",
+      "quantifiers": "FOR ALL landscapes (r1,r2,eps) satisfying Assumption 2.1(i,iii) and FOR ALL admissible p_0, THERE EXISTS rho_eps in (0,1) such that FOR ALL t>=0: m_{t+1} <= rho_eps*m_t.",
+      "assumptions_that_must_hold_in_any_test": [
+        "2.1(i) bounded rewards",
+        "2.1(iii) outside gap delta>0 for both rewards on X\\S_eps",
+        "2.1(iii) cross-reward gaps Delta_1,Delta_2>0",
+        "2.1(ii) is also audited even though the lemma cites only (i,iii)"
+      ],
+      "falsification_condition": "Exhibit a landscape and p_0 satisfying every audited clause of Assumption 2.1 for which sup_t m_{t+1}/m_t >= 1. Because rho_eps is existentially quantified BEFORE the universal over t, a single step with m_{t+1} > m_t suffices.",
+      "verification_condition": "For the appendix form: derive m_{t+1} <= rho_eps*m_t from Assumption B.4 symbolically, and confirm geometric decay numerically on general continuous landscapes on which B.4 is measured to hold.",
+      "must_not_count_as_evidence": [
+        "monotone decrease of m_t without a uniform rho<1",
+        "decay observed only on the plateau 3-state reduction",
+        "a formula-derived rho used as its own evidence"
+      ]
+    },
+    {
+      "id": "claim2",
+      "anchor": "Lemma 3.5 (Section 3.3); appendix Lemma B.6. Interval endpoints from Lemma 3.4 / B.5",
+      "judged_status": "TOY (1/2)",
+      "judged_criticism": "the general Lemma 5 claim about bounded leakage in arbitrary 2-basin landscapes is only checked on the simplified instance",
+      "exact_statement": "Fix eps>0, large-K regime. Assume Assumption 2.1 and the decay conclusion of Lemma 3.3. Suppose q in (kappa_1, 1-kappa_2). Then there exist c_eps>0 and t_0 such that for all t>=t_0: max{0,(q-kappa_1)/(1-kappa_1)} - c_eps*m_t <= a_t <= min{1, q/(1-kappa_2)} + c_eps*m_t. In particular there exists eta>0 such that eta <= a_t <= 1-eta for all t>=t_0.",
+      "quantifiers": "FOR ALL landscapes satisfying Assumption 2.1 with m_t->0 and q in (kappa_1,1-kappa_2), THERE EXISTS eta>0 and t_0 such that FOR ALL t>=t_0: eta <= a_t <= 1-eta.",
+      "claim_under_test": "the non-collapse conclusion eta <= a_t <= 1-eta",
+      "secondary_statement_under_test": "the specific interval endpoints (q-kappa_1)/(1-kappa_1) and q/(1-kappa_2)",
+      "assumptions_that_must_hold_in_any_test": [
+        "all of Assumption 2.1",
+        "m_t -> 0 (the decay conclusion is a HYPOTHESIS here, so it may be imposed rather than derived)",
+        "kappa_1 < q < 1 - kappa_2"
+      ],
+      "falsification_condition": "A landscape satisfying every clause with m_t->0 and q strictly inside (kappa_1,1-kappa_2) on which a_t -> 0 or a_t -> 1.",
+      "verification_condition": "A symbolic derivation of a strictly positive lower bound on liminf a_t and a strictly-below-one upper bound on limsup a_t, valid for all landscapes in the class, plus large-scale numerical corroboration on non-plateau continuous landscapes with adversarial parameter search.",
+      "must_not_count_as_evidence": [
+        "a_inf near q on a single instance",
+        "plateau-only tests, which make basin conditionals invariant by construction and hide the eps dependence"
+      ]
+    },
+    {
+      "id": "claim3",
+      "anchor": "Theorem 3.6 (Section 3.3); appendix Theorem B.6",
+      "judged_status": "TOY (1/2)",
+      "judged_criticism": "a special-case identity on a 3-state system, not the general variance lower bound for arbitrary 2-basin mixtures",
+      "exact_statement": "Assume the setting of Theorem 3.3 and a_inf in (0,1). Then Var_{p_t}[r_i] -> Var_{p_inf}[r_i], and Var_{p_inf}[r_i] contains an explicit inter-basin term a_inf(1-a_inf)(mu_{i,1}-mu_{i,2})^2 where mu_{i,j} := E_{p_{inf,j}}[r_i]. Under basin separation this yields Var_{p_inf}[r_i] >= a_inf(1-a_inf)*max{Delta_i - 2eps, 0}^2.",
+      "quantifiers": "FOR ALL two-basin limit mixtures p_inf = a P1 + (1-a) P2 with a in (0,1), P_i supported on S_{i,eps}, and separation as in Assumption B.5, FOR EACH i in {1,2}: Var_{p_inf}[r_i] >= a(1-a)max{Delta_i-2eps,0}^2.",
+      "assumptions_that_must_hold_in_any_test": [
+        "S_{1,eps} and S_{2,eps} disjoint",
+        "a_inf strictly inside (0,1)",
+        "separation: r_1 <= r_1*-Delta_1+eps on S_2 and r_2 <= r_2*-Delta_2+eps on S_1",
+        "bounded rewards"
+      ],
+      "falsification_condition": "A conforming mixture with Var_{p_inf}[r_i] < a(1-a)max{Delta_i-2eps,0}^2 for some i.",
+      "verification_condition": "Symbolic reconstruction of the law-of-total-variance decomposition plus the two basin-mean bounds, giving the inequality for symbolic a, Delta_i, eps; and exhaustive/randomised numerical verification over general non-plateau continuous within-basin shapes.",
+      "must_not_count_as_evidence": [
+        "the plateau equality Var = a(1-a)Delta^2, which is one point of the domain",
+        "checking only i=1 or only symmetric landscapes"
+      ]
+    },
+    {
+      "id": "claim4",
+      "anchor": "Theorem 3.7 (Section 3.3); appendix Theorem B.7; Corollary 3.8 / B.8",
+      "judged_status": "TOY (1/2)",
+      "judged_criticism": "checks a calculus fact on a simplified 1-D grid; does not verify that the limiting distribution FROM pluralistic curation coincides with the Nash bargaining solution",
+      "exact_statement": "Let P1,P2 be fixed distributions on S_{1,eps},S_{2,eps}; p_alpha := alpha P1 + (1-alpha) P2; u_i(p) := E_p[r_i]; d_1 := u_1(P2); d_2 := u_2(P1). Assume u_1(P1)>u_1(P2) and u_2(P2)>u_2(P1). Then the weighted Nash product (u_1(p_alpha)-d_1)^q (u_2(p_alpha)-d_2)^{1-q} is uniquely maximized over alpha in [0,1] at alpha* = q. Corollary 3.8: in the plateau hard-separation regime the limiting distribution of the retraining dynamics IS that Nash point p_q.",
+      "quantifiers": "FOR ALL q in (0,1) and FOR ALL P1,P2,r1,r2 with strictly positive bargaining gains: argmax over the CONTINUUM alpha in [0,1] is exactly q, and the maximizer is unique.",
+      "assumptions_that_must_hold_in_any_test": [
+        "strictly positive gains u_1(P1)-u_1(P2) > 0 and u_2(P2)-u_2(P1) > 0",
+        "P_i supported on the respective basins",
+        "for the Corollary: plateau structure (B.6) and vanishing leakage"
+      ],
+      "falsification_condition": "Either a conforming instance whose Nash maximizer differs from q, or a plateau hard-separation dynamics whose limit a_inf does not converge to the Nash maximizer.",
+      "verification_condition": "A symbolic proof certificate over the continuum (derivative factorisation, strict log-concavity, endpoint values) valid for symbolic q -- NOT a grid search -- AND separately running the curation dynamics to convergence and comparing a_inf to the independently computed Nash argmax.",
+      "must_not_count_as_evidence": [
+        "a finite grid maximisation, which cannot establish a claim about a continuum",
+        "verifying the calculus fact while skipping the dynamics-coincidence half of the claim"
+      ]
+    },
+    {
+      "id": "claim5",
+      "anchor": "Section 4 (E3), Table 1, Figure 4; Appendix C.5",
+      "judged_status": "INCONCLUSIVE (0/2)",
+      "judged_criticism": "no flow-model training, no entropy/diversity measurements, no experimental data",
+      "exact_statement": "CIFAR-10 flow-model retraining experiments show curation with balanced multi-reward preferences sustains higher entropy and diversity than single-reward curation across recursive retraining generations.",
+      "quantifiers": "A directional (comparative) empirical claim: across recursive retraining generations t=1..T, balanced multi-preference curation yields higher class entropy and higher diversity proxies than single-reward curation.",
+      "paper_numbers": {
+        "entropy_by_M": {"2": 1.098, "3": 1.357, "4": 1.67, "5": 1.687},
+        "fid_by_M": {"2": 77.6, "3": 64.2, "4": 44.5, "5": 35.9},
+        "single_preference_q0": {"entropy": 0.032, "fid": 100.0, "kl": 2.271, "feature_var": 0.2, "intra_class_var": 0.05}
+      },
+      "assumptions_that_must_hold_in_any_test": [
+        "a real generative model trained by OT-CFM on real CIFAR-10",
+        "reward derived from a real image classifier's class probabilities, r = gamma * pi_i(x)",
+        "K-BT discrete-choice curation with the paper's keep ratio",
+        "recursive retraining over multiple generations with the metrics measured per generation"
+      ],
+      "falsification_condition": "Balanced multi-preference curation does NOT sustain higher entropy/diversity than single-reward curation, with the difference resolved beyond seed noise.",
+      "verification_condition": "The directional comparison holds with non-overlapping seed-level uncertainty, in a run implementing OT-CFM, real CIFAR-10 and a real classifier reward. Sample counts / model size / resolution may be downscaled for CPU, and any downscaling must be stated explicitly next to the result.",
+      "must_not_count_as_evidence": [
+        "a closed-form 2-basin surrogate presented as the CIFAR-10 experiment",
+        "substituting a non-flow generative model for OT-CFM",
+        "a single seed per configuration"
+      ]
+    },
+    {
+      "id": "claim6",
+      "anchor": "Section 4 (E4), Figure 5; Appendix C.6",
+      "judged_status": "TOY (1/2)",
+      "judged_criticism": "a simplified proxy: no language model training, no real text generation",
+      "exact_statement": "Text-domain experiments confirm that curation under two competing length-based reward preferences sustains entropy over recursive retraining, consistent with the two-basin theory. Larger conflict distance d = |T_A - T_B| leads to higher sustained entropy of the generated length distribution H(L).",
+      "quantifiers": "Across N=20 recursive rounds, H(L) is sustained (does not collapse) under balanced two-preference curation, and sustained H(L) increases with conflict distance d.",
+      "assumptions_that_must_hold_in_any_test": [
+        "an actual autoregressive language model, fine-tuned each round on its own curated generations",
+        "the paper's architecture: 6 layers, 6 heads, dim 384, GPT-2 vocab 50257",
+        "WikiText-2 seed pool of 1000 sequences",
+        "reward R(y;T) = -|L(y)-T| on word count, BT selection with tau=0.5, q=0.5",
+        "20 rounds, 200 curated per round, AdamW lr 5e-5, 2 epochs/round, batch 8",
+        "nucleus sampling at temperature 0.8 for the 200 new samples per round",
+        "H(L) = discrete entropy of the generated length distribution"
+      ],
+      "falsification_condition": "H(L) collapses toward 0 under balanced two-preference curation, or sustained H(L) does not increase with d, beyond seed noise.",
+      "verification_condition": "Real LM fine-tuning loop as specified, H(L) per round, multiple seeds, single-reward negative control that DOES collapse.",
+      "must_not_count_as_evidence": [
+        "a 2-basin closed-form entropy calculation with no language model",
+        "entropy of a hand-built length distribution rather than of model generations"
+      ]
+    }
+  ]
+}
