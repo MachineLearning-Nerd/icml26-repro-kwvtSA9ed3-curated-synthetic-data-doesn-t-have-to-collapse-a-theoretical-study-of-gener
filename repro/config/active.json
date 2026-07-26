@@ -1,5 +1,5 @@
 {
-  "node": "claims-5-6-decided/crossconfig",
+  "node": "final/all-six-claims",
   "stages": [
     "judged_reference",
     "symbolic_claim1",
@@ -14,7 +14,7 @@
   ],
   "estimated_cores": 8,
   "compute_target": "hf:cpu-upgrade",
-  "notes": "Final consolidation. Reruns the whole theory regression suite, then decides Claims 5 and 6 from the cross-configuration comparison their statements actually make, using the measured series from the sibling arms in repro/data/sibling_summaries.json. The per-configuration empirical stages are NOT rerun here: their numbers are inputs, each traceable to its run id. Every verdict on this node is derived, and the comparison carries a self-test showing it can return FALSIFIED.",
+  "notes": "FINAL citable node. Reruns the whole theory regression suite and decides Claims 5 and 6 from the cross-configuration comparison, and emits every artifact byte-identically into the run log (SHA-256 framed) so the evidence is recoverable in orx local mode, where no artifact store exists.",
   "params": {
     "judged_reference": {
       "eps": 0.1
