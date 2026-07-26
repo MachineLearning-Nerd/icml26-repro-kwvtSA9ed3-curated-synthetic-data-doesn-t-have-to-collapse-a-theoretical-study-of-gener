@@ -1,10 +1,18 @@
 {
-  "node": "baseline/framework-and-judged-reference",
-  "stages": ["judged_reference"],
+  "node": "route-a/symbolic-proof-certificates",
+  "stages": [
+    "judged_reference",
+    "symbolic_claim1",
+    "symbolic_claim2",
+    "symbolic_claim3",
+    "symbolic_claim4"
+  ],
   "estimated_cores": 1,
   "compute_target": "hf:cpu-upgrade",
-  "notes": "Baseline control. Reproduces the judged 3-state toy numbers as reference only; records BLOCKED.",
+  "notes": "Route A. Runs the inherited baseline reference (cumulative regression) plus symbolic certificates.",
   "params": {
-    "judged_reference": { "eps": 0.1 }
+    "judged_reference": {
+      "eps": 0.1
+    }
   }
 }
