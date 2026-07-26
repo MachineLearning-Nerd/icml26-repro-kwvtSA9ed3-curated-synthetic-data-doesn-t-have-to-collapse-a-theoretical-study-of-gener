@@ -1,18 +1,57 @@
 {
-  "node": "theory-consolidated/routes-A+B",
+  "node": "claim6/d5",
   "stages": [
     "judged_reference",
-    "symbolic_claim1", "symbolic_claim2", "symbolic_claim3", "symbolic_claim4",
-    "exact_claim1", "numeric_claim2", "numeric_claim3", "numeric_claim4"
+    "symbolic_claim1",
+    "symbolic_claim2",
+    "symbolic_claim3",
+    "symbolic_claim4",
+    "exact_claim1",
+    "numeric_claim2",
+    "numeric_claim3",
+    "numeric_claim4",
+    "claim6_text_gpt2"
   ],
-  "estimated_cores": 1,
+  "estimated_cores": 8,
   "compute_target": "hf:cpu-upgrade",
-  "notes": "Cumulative theory regression suite. Every claim carries two independent routes: symbolic certificates (A) and exact/continuous numerics (B). Later nodes inherit and rerun all of it.",
+  "notes": "Claim 6 (E4) sibling d5. Inherits and reruns the full theory regression suite, then runs the text-domain retraining loop. T_B=15.",
   "params": {
-    "judged_reference": { "eps": 0.1 },
-    "exact_claim1": { "steps": 60 },
-    "numeric_claim2": { "steps": 300, "n_random": 400 },
-    "numeric_claim3": { "n_random": 3000, "steps": 300 },
-    "numeric_claim4": { "steps": 400 }
+    "judged_reference": {
+      "eps": 0.1
+    },
+    "exact_claim1": {
+      "steps": 60
+    },
+    "numeric_claim2": {
+      "steps": 300,
+      "n_random": 400
+    },
+    "numeric_claim3": {
+      "n_random": 3000,
+      "steps": 300
+    },
+    "numeric_claim4": {
+      "steps": 400
+    },
+    "claim6_text_gpt2": {
+      "T_A": 10,
+      "T_B": 15,
+      "rounds": 20,
+      "n_seed": 1000,
+      "n_curated": 200,
+      "n_generate": 200,
+      "tau": 0.5,
+      "q": 0.5,
+      "lr": 5e-05,
+      "epochs": 2,
+      "batch": 8,
+      "temperature": 0.8,
+      "top_p": 0.95,
+      "pretrain_steps": 1500,
+      "pretrain_batch": 16,
+      "gen_batch": 50,
+      "threads": 8,
+      "seed": 0
+    }
   }
 }
