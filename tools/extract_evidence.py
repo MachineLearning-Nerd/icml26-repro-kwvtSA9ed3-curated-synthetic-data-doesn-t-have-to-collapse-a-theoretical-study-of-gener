@@ -86,8 +86,14 @@ def recover_artifacts(log: str, dest: Path) -> list[dict]:
 
 
 def fetch(run_id: str) -> str:
+    """Fetch the WHOLE log.
+
+    `orx logs` tails by default, so a byte budget smaller than the log silently
+    drops the beginning — which, with artifact frames spread through the run,
+    means silently losing evidence. Ask for far more than any run produces.
+    """
     return subprocess.run(
-        ["orx", "logs", run_id, "--bytes", "1000000"],
+        ["orx", "logs", run_id, "--bytes", "100000000"],
         capture_output=True, text=True, check=True,
     ).stdout
 
