@@ -63,6 +63,28 @@ def copy_protected(judged: Path, out: Path) -> dict[str, str]:
     return hashes
 
 
+def readme_tags(p: Path) -> set[str]:
+    """Tags declared in a Space README's YAML frontmatter."""
+    if not p.is_file():
+        return set()
+    text = p.read_text()
+    if not text.startswith("---"):
+        return set()
+    fm = text.split("---", 2)[1]
+    tags, in_tags = set(), False
+    for line in fm.splitlines():
+        if line.strip().startswith("tags:"):
+            in_tags = True
+            continue
+        if in_tags:
+            s = line.strip()
+            if s.startswith("- "):
+                tags.add(s[2:].strip())
+            elif s and not s.startswith("#"):
+                break
+    return tags
+
+
 def verify_subset(judged: Path, out: Path, hashes: dict[str, str]) -> list[str]:
     """The judged file set must be a subset of the candidate, with content preserved
     for everything except the navigation files we are required to update."""
@@ -71,6 +93,15 @@ def verify_subset(judged: Path, out: Path, hashes: dict[str, str]) -> list[str]:
     missing = old - new
     if missing:
         problems.append(f"MISSING from candidate: {sorted(missing)}")
+
+    # README.md is exempt from the byte-identical check because we rewrite its prose --
+    # but its frontmatter TAGS are how the challenge judge discovers this logbook at all
+    # (`icml2026-repro` + `paper-<openreview-id>`). Dropping them silently unpublishes the
+    # logbook from judging, which is exactly what happened once. Never again.
+    lost = readme_tags(judged / "README.md") - readme_tags(out / "README.md")
+    if lost:
+        problems.append(f"README frontmatter DROPPED tags {sorted(lost)} — the judge "
+                        f"discovers logbooks by these; the logbook would become invisible")
     for rel, h in hashes.items():
         if rel in {"pages/index.md", "logbook.json", "README.md"}:
             continue  # navigation surfaces, intentionally updated
