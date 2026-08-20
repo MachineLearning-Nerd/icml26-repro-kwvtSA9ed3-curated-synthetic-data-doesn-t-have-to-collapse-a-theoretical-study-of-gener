@@ -1,0 +1,35 @@
+cff-version: 1.2.0
+title: "Legacy/source workspace for Curated Synthetic Data Doesn't Have to Collapse: A Theoretical Study of Generative Retraining with Pluralistic Preferences"
+type: software
+authors:
+  - family-names: Falahati
+    given-names: Ali
+  - family-names: Amiri
+    given-names: Mohammad Mohammadi
+  - family-names: Larson
+    given-names: Kate
+  - family-names: Golab
+    given-names: Lukasz
+repository-code: "https://github.com/MachineLearning-Nerd/icml26-legacy-curated-synthetic-data"
+url: "https://github.com/MachineLearning-Nerd/icml26-legacy-curated-synthetic-data"
+abstract: "Legacy/source workspace preserving the implementation, evidence artifacts, and branch history for the associated ICML 2026 reproduction record."
+keywords:
+  - reproduction
+  - ICML 2026
+references:
+  - type: article
+    title: "Curated Synthetic Data Doesn't Have to Collapse: A Theoretical Study of Generative Retraining with Pluralistic Preferences"
+    authors:
+      - family-names: Falahati
+        given-names: Ali
+      - family-names: Amiri
+        given-names: Mohammad Mohammadi
+      - family-names: Larson
+        given-names: Kate
+      - family-names: Golab
+        given-names: Lukasz
+    identifiers:
+      - type: arxiv
+        value: "2605.07724"
+    url: "https://arxiv.org/abs/2605.07724"
+

@@ -1,5 +1,30 @@
 # Curated Synthetic Data Doesn't Have to Collapse — reproduction
 
+## Collection classification and audit boundary
+
+This repository is a **legacy/source workspace** for *Curated Synthetic Data Doesn't Have to Collapse: A Theoretical Study of Generative Retraining with Pluralistic Preferences*
+(arXiv `2605.07724`, OpenReview `kwvtSA9ed3`). It is preserved
+separately from the standardized canonical record at
+[`icml26-curated-synthetic-data`](https://github.com/MachineLearning-Nerd/icml26-curated-synthetic-data).
+
+The claim results and scores recorded below are historical results of this
+workspace. They are not new paper-level verifications performed while
+organizing the collection. The collection audit did not run the scientific
+implementation; the canonical record documents its own scoped status and
+limitations.
+
+### How the historical claim evidence is produced
+
+The claim table and experiment log below are the authoritative mapping from
+each paper claim to its producer, command, control, and evidence artifact. In
+this workspace, the claim-specific producers, controls, and verdict rules write the committed report, figures, and structured evidence artifacts documented by the experiment log.
+
+The former `orx/*` branches are historical workstreams, not additional final
+publication claims. Their purposes and tips are preserved in
+[`BRANCH_AUDIT.md`](BRANCH_AUDIT.md). Citation and author acknowledgment
+details are in [`CITATION.cff`](CITATION.cff) and
+[`AUTHOR_THANK_YOU.md`](AUTHOR_THANK_YOU.md).
+
 Reproduction of **arXiv:2605.07724** (OpenReview `kwvtSA9ed3`), *"Curated Synthetic Data Doesn't
 Have to Collapse: A Theoretical Study of Generative Retraining with Pluralistic Preferences."*
 
