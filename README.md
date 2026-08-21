@@ -25,6 +25,10 @@ publication claims. Their purposes and tips are preserved in
 details are in [`CITATION.cff`](CITATION.cff) and
 [`AUTHOR_THANK_YOU.md`](AUTHOR_THANK_YOU.md).
 
+## Thank you
+
+Thank you to the paper authors for making this research available for study. The full acknowledgment is in [`AUTHOR_THANK_YOU.md`](AUTHOR_THANK_YOU.md).
+
 Reproduction of **arXiv:2605.07724** (OpenReview `kwvtSA9ed3`), *"Curated Synthetic Data Doesn't
 Have to Collapse: A Theoretical Study of Generative Retraining with Pluralistic Preferences."*
 
